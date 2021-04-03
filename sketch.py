@@ -39,21 +39,21 @@ halfstep_seq = [
 def motor(angle, motor):
     steps = angle * 4096 / 360
     counter = 0;
-        for i in range(512):
-            for halfstep in range(8):
-                if counter > abs(steps):
-                    break
-                for pin in range(4):
-                    if (angle < 0):
-                        CCW = list(reversed(motor))
-                        GPIO.output(CCW[pin], halfstep_seq[halfstep][pin])
-                    else:
-                        GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
-                time.sleep(0.001)
-                counter += 1
-            else:
-                continue
-            break
+    for i in range(512):
+        for halfstep in range(8):
+            if counter > abs(steps):
+                break
+            for pin in range(4):
+                if (angle < 0):
+                    CCW = list(reversed(motor))
+                    GPIO.output(CCW[pin], halfstep_seq[halfstep][pin])
+                else:
+                    GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
+            time.sleep(0.001)
+            counter += 1
+        else:
+            continue
+        break
     GPIO.cleanup()
 
 def contrast_stretch(im):
