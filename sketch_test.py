@@ -95,48 +95,45 @@ while True:
     #     while True:
     #         camera.capture(stream, format='bgr', use_video_port=True)
     #         image = stream.array
-        b, g, r = cv2.split(image)
+    b, g, r = cv2.split(image)
 
-        # Also check https://stackoverflow.com/questions/64134608/calculating-ndvi-from-a-nir-image-of-a-plant
-        # Calculate the NDVI
-        bottom = (r.astype(float) + b.astype(float))
-        bottom[bottom == 0] = 0.01  # Make sure we don't divide by zero!
+    # Also check https://stackoverflow.com/questions/64134608/calculating-ndvi-from-a-nir-image-of-a-plant
+    # Calculate the NDVI
+    bottom = (r.astype(float) + b.astype(float))
+    bottom[bottom == 0] = 0.01  # Make sure we don't divide by zero!
 
-        # This would be the image to call for displaying NDVI
-        ndvi = (r.astype(float) - b) / bottom
-        ndvi = contrast_stretch(ndvi)
-        ndvi = ndvi.astype(np.uint8)
-        image = image.astype(np.uint8)
-        g = g.astype(np.uint8)
+    # This would be the image to call for displaying NDVI
+    ndvi = (r.astype(float) - b) / bottom
+    # ndvi = contrast_stretch(ndvi)
+    ndvi = ndvi.astype(np.uint8)
+    image = image.astype(np.uint8)
+    g = g.astype(np.uint8)
 
-        #randomSpore() from image ?
-        # https://numpy.org/doc/stable/reference/generated/numpy.mean.html
-        mn = ndvi.mean()
-        mx = ndvi.max()
-        mi = ndvi.min()
-        #random generator with seed
-        # https://realpython.com/python-random/#pythons-best-kept-secrets
+    #randomSpore() from image ?
+    # https://numpy.org/doc/stable/reference/generated/numpy.mean.html
+    mn = ndvi.mean()
+    mx = ndvi.max()
+    mi = ndvi.min()
+    #random generator with seed
+    # https://realpython.com/python-random/#pythons-best-kept-secrets
 
-        # see "Using hash() on a Custom Object" section
-        # https://www.askpython.com/python/built-in-methods/python-hash-function
+    # see "Using hash() on a Custom Object" section
+    # https://www.askpython.com/python/built-in-methods/python-hash-function
 
-        #encryption in openCV with cv2.bitwise_xor noise based on np.random(size of image)
-        # https://www.programmersought.com/article/16714778804/
+    #encryption in openCV with cv2.bitwise_xor noise based on np.random(size of image)
+    # https://www.programmersought.com/article/16714778804/
 
-        # Call for concatenating the different images together
-        im_tile = concat_tile([[image, g],[ndvi, background_tile]])
+    # Call for concatenating the different images together
+    # im_tile = concat_tile([[image, g],[ndvi, background_tile]])
 
-        cv2.imshow("cryptogam", im_tile)
+    cv2.imshow("cryptogam", image)
 
-        stream.truncate(0)
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        GPIO.cleanup()
+        cv2.destroyAllWindows()
+    	break
 
 # check this link for blockchain configuration of data
 # https://www.activestate.com/blog/how-to-build-a-blockchain-in-python/
 # https://livecodestream.dev/post/from-zero-to-blockchain-in-python-part-1/
-
-#waits for user to press any key
-#(this is necessary to avoid Python kernel form crashing)
-cv2.waitKey(0)
-
-#closing all open windows
-cv2.destroyAllWindows()
